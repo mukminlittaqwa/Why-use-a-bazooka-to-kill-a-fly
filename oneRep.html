@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>1RM Calculator</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        background: linear-gradient(135deg, #0d1117, #161b22);
+        color: #ffffff;
+        min-height: 100vh;
+      }
+      .card {
+        background: #161b22;
+        border: 1px solid #30363d;
+        border-radius: 16px;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
+      }
+      .btn-calculate {
+        background: #238636;
+        border: none;
+        font-weight: bold;
+        color: white !important;
+      }
+      .btn-calculate:hover {
+        background: #2ea043;
+      }
+      .result-box {
+        background: #21262d;
+        border-radius: 12px;
+        padding: 25px;
+        margin-top: 25px;
+        display: none;
+        border: 1px solid #30363d;
+      }
+      .emoji {
+        font-size: 3rem;
+      }
+      .info-card {
+        background: #21262d;
+        border-radius: 12px;
+        padding: 20px;
+        margin-top: 30px;
+        border: 1px solid #30363d;
+        color: #8b949e !important;
+      }
+    </style>
+  </head>
+  <body class="d-flex align-items-center py-5 text-light">
+    <div class="container">
+      <div class="row justify-content-center">
+        <div class="col-lg-6 col-md-8 col-sm-10">
+          <div class="card p-5">
+            <h1 class="text-center mb-4 fw-bold text-light">
+              🔥 1RM Calculator
+            </h1>
+            <p class="text-center mb-5 text-light">
+              Calculate your One-Rep Max and get training load recommendations
+            </p>
+
+            <div class="mb-3">
+              <label class="form-label fw-semibold text-light"
+                >Weight Lifted (kg)</label
+              >
+              <input
+                type="number"
+                id="weight"
+                class="form-control form-control-lg"
+                placeholder="e.g. 80"
+              />
+            </div>
+
+            <div class="mb-4 text-light">
+              <label class="form-label fw-semibold"
+                >Number of Repetitions</label
+              >
+              <input
+                type="number"
+                id="reps"
+                class="form-control form-control-lg"
+                placeholder="e.g. 8"
+              />
+            </div>
+
+            <div class="d-grid mb-4 text-light">
+              <button
+                onclick="calculate1RM()"
+                class="btn btn-success btn-lg btn-calculate"
+              >
+                Calculate 1RM
+              </button>
+            </div>
+
+            <div id="result" class="result-box text-light">
+              <h3 class="text-center mb-4">
+                Estimated 1RM:
+                <span id="oneRM" class="text-warning fw-bold fs-1"></span> kg
+              </h3>
+              <hr />
+              <div class="row g-4 text-center">
+                <div class="col-md-4 col-12">
+                  <div class="emoji mb-3">🔥</div>
+                  <h5 class="fw-bold">Strength</h5>
+                  <p class="mb-1">85–95%</p>
+                  <p class="mb-1"><strong id="strengthWeight"></strong> kg</p>
+                  <p class="small">1–5 Reps</p>
+                </div>
+                <div class="col-md-4 col-12">
+                  <div class="emoji mb-3">💪</div>
+                  <h5 class="fw-bold">Hypertrophy</h5>
+                  <p class="mb-1">65–80%</p>
+                  <p class="mb-1">
+                    <strong id="hypertrophyWeight"></strong> kg
+                  </p>
+                  <p class="small">8–12 Reps</p>
+                </div>
+                <div class="col-md-4 col-12">
+                  <div class="emoji mb-3">🧠</div>
+                  <h5 class="fw-bold">Endurance</h5>
+                  <p class="mb-1">50–60%</p>
+                  <p class="mb-1"><strong id="enduranceWeight"></strong> kg</p>
+                  <p class="small">15+ Reps</p>
+                </div>
+              </div>
+            </div>
+
+            <div
+              id="error"
+              class="alert alert-danger mt-3"
+              style="display: none"
+            ></div>
+          </div>
+
+          <div class="info-card small">
+            <h5 class="fw-bold mb-3">What is 1RM?</h5>
+            <p>
+              One-Rep Max (1RM) is the maximum weight you can lift for one rep.
+              Formula: <code>1RM = Weight × (36 / (37 - Reps))</code>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function calculate1RM() {
+        const weight = parseFloat(document.getElementById("weight").value);
+        const reps = parseInt(document.getElementById("reps").value);
+        const errorDiv = document.getElementById("error");
+        const resultDiv = document.getElementById("result");
+
+        errorDiv.style.display = "none";
+        resultDiv.style.display = "none";
+
+        if (!weight || !reps || weight <= 0 || reps <= 0) {
+          errorDiv.textContent = "Please enter valid weight and reps!";
+          errorDiv.style.display = "block";
+          return;
+        }
+
+        if (reps > 30) {
+          errorDiv.textContent = "Formula is most accurate for ≤30 reps.";
+          errorDiv.style.display = "block";
+          return;
+        }
+
+        const oneRM = weight * (36 / (37 - reps));
+        const rounded1RM = Math.round(oneRM * 2) / 2;
+
+        document.getElementById("oneRM").textContent = rounded1RM.toFixed(1);
+        document.getElementById("strengthWeight").textContent =
+          Math.round(rounded1RM * 0.85 * 2) / 2 +
+          "–" +
+          Math.round(rounded1RM * 0.95 * 2) / 2;
+        document.getElementById("hypertrophyWeight").textContent =
+          Math.round(rounded1RM * 0.65 * 2) / 2 +
+          "–" +
+          Math.round(rounded1RM * 0.8 * 2) / 2;
+        document.getElementById("enduranceWeight").textContent =
+          Math.round(rounded1RM * 0.5 * 2) / 2 +
+          "–" +
+          Math.round(rounded1RM * 0.6 * 2) / 2;
+
+        resultDiv.style.display = "block";
+      }
+    </script>
+  </body>
+</html>
