@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Precision Nutrition</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/uikit@3.17.11/dist/css/uikit.min.css"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;800&display=swap"
+      rel="stylesheet"
+    />
+    <style>
+      body {
+        font-family: "Plus Jakarta Sans", sans-serif;
+        background: #0f1115;
+        color: #f8f9fa;
+        min-height: 100vh;
+      }
+      .glass-card {
+        background: rgba(22, 26, 30, 0.95);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        border-radius: 24px;
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+      }
+      .uk-input,
+      .uk-select {
+        background: #1a1d23 !important;
+        border: 1px solid #30363d !important;
+        color: #fff !important;
+        border-radius: 12px;
+        transition: 0.3s;
+      }
+      .uk-input:focus {
+        border-color: #00d2ff !important;
+      }
+      .btn-primary {
+        background: linear-gradient(135deg, #00d2ff 0%, #3a7bd5 100%);
+        border: none;
+        color: white;
+        font-weight: 700;
+        border-radius: 12px;
+        transition: 0.3s;
+      }
+      .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 5px 15px rgba(0, 210, 255, 0.3);
+      }
+      .result-card {
+        background: rgba(255, 255, 255, 0.03);
+        border-radius: 16px;
+        padding: 20px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+      }
+      .accent-text {
+        color: #00d2ff;
+        font-weight: 800;
+      }
+      .label-custom {
+        font-size: 0.85rem;
+        font-weight: 600;
+        color: #8b949e;
+        margin-bottom: 8px;
+        display: block;
+      }
+    </style>
+  </head>
+  <body class="uk-flex uk-flex-middle">
+    <div
+      class="uk-container uk-container-small uk-margin-large-top uk-margin-large-bottom"
+    >
+      <div class="glass-card uk-card uk-card-body">
+        <div class="uk-text-center uk-margin-medium-bottom">
+          <h1
+            class="uk-text-bold uk-margin-remove"
+            style="letter-spacing: -1px"
+          >
+            MACRO <span class="accent-text">ARCHITECT</span>
+          </h1>
+          <p class="uk-text-meta">
+            Precision Nutrition Engineering for Elite Athletes
+          </p>
+        </div>
+
+        <div class="uk-grid-small uk-child-width-1-2@s" uk-grid>
+          <div>
+            <span class="label-custom">Gender</span>
+            <select class="uk-select" id="gender">
+              <option value="male">Male</option>
+              <option value="female">Female</option>
+            </select>
+          </div>
+          <div>
+            <span class="label-custom">Goal</span>
+            <select class="uk-select" id="goal">
+              <option value="bulk">Lean Bulk (+500 kcal)</option>
+              <option value="cut">Aggressive Cut (-500 kcal)</option>
+              <option value="maintain">Maintenance</option>
+            </select>
+          </div>
+          <div>
+            <span class="label-custom">Weight (kg)</span
+            ><input
+              class="uk-input"
+              id="weight"
+              type="number"
+              placeholder="e.g. 75"
+            />
+          </div>
+          <div>
+            <span class="label-custom">Height (cm)</span
+            ><input
+              class="uk-input"
+              id="height"
+              type="number"
+              placeholder="e.g. 180"
+            />
+          </div>
+          <div>
+            <span class="label-custom">Age</span
+            ><input
+              class="uk-input"
+              id="age"
+              type="number"
+              placeholder="e.g. 25"
+            />
+          </div>
+          <div>
+            <span class="label-custom">Activity Level</span>
+            <select class="uk-select" id="activity">
+              <option value="1.2">Sedentary (Office job)</option>
+              <option value="1.375">Light (1-2 days/week)</option>
+              <option value="1.55">Moderate (3-5 days/week)</option>
+              <option value="1.725">Active (6-7 days/week)</option>
+            </select>
+          </div>
+        </div>
+
+        <button
+          onclick="calculateMacros()"
+          class="uk-button uk-button-large uk-width-1-1 uk-margin-large-top btn-primary"
+        >
+          GENERATE
+        </button>
+
+        <div id="results" class="uk-margin-large-top" style="display: none">
+          <hr class="uk-divider-icon" />
+          <div class="uk-text-center uk-margin-medium-bottom">
+            <h3 class="uk-margin-remove">Your Daily Target</h3>
+            <div class="uk-text-bold" style="font-size: 3.5rem; line-height: 1">
+              <span id="totalCalories" class="accent-text"></span>
+              <small class="uk-text-muted" style="font-size: 1rem"
+                >kcal/day</small
+              >
+            </div>
+          </div>
+
+          <div
+            class="uk-child-width-1-3@m uk-grid-small uk-text-center"
+            uk-grid
+          >
+            <div>
+              <div class="result-card">
+                <div class="uk-text-meta">PROTEIN</div>
+                <div class="uk-text-bold uk-text-large">
+                  <span id="protein"></span>g
+                </div>
+                <div class="uk-text-small uk-text-muted">Muscle Repair</div>
+              </div>
+            </div>
+            <div>
+              <div class="result-card">
+                <div class="uk-text-meta">CARBS</div>
+                <div class="uk-text-bold uk-text-large">
+                  <span id="carbs"></span>g
+                </div>
+                <div class="uk-text-small uk-text-muted">Energy Source</div>
+              </div>
+            </div>
+            <div>
+              <div class="result-card">
+                <div class="uk-text-meta">FATS</div>
+                <div class="uk-text-bold uk-text-large">
+                  <span id="fats"></span>g
+                </div>
+                <div class="uk-text-small uk-text-muted">Hormone Health</div>
+              </div>
+            </div>
+          </div>
+
+          <div
+            class="uk-alert-primary uk-margin-top uk-border-rounded"
+            uk-alert
+          >
+            <p class="uk-text-small">
+              <span uk-icon="info"></span> <strong>Strategy:</strong>
+              <span id="strategyText"></span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function calculateMacros() {
+        const gender = document.getElementById("gender").value;
+        const weight = parseFloat(document.getElementById("weight").value);
+        const height = parseFloat(document.getElementById("height").value);
+        const age = parseInt(document.getElementById("age").value);
+        const activity = parseFloat(document.getElementById("activity").value);
+        const goal = document.getElementById("goal").value;
+
+        if (!weight || !height || !age) {
+          alert("Please fill in all fields");
+          return;
+        }
+
+        let bmr;
+        if (gender === "male") {
+          bmr = 10 * weight + 6.25 * height - 5 * age + 5;
+        } else {
+          bmr = 10 * weight + 6.25 * height - 5 * age - 161;
+        }
+
+        let tdee = bmr * activity;
+        let targetCalories;
+        let strategy;
+        if (goal === "bulk") {
+          targetCalories = tdee + 500;
+          strategy =
+            "High calorie surplus to maximize muscle protein synthesis. Aim for progressive overload in the gym.";
+        } else if (goal === "cut") {
+          targetCalories = tdee - 500;
+          strategy =
+            "Caloric deficit to trigger fat oxidation while maintaining lean mass through high protein intake.";
+        } else {
+          targetCalories = tdee;
+          strategy =
+            "Maintenance phase. Perfect for body recomposition or recovery between intense cycles.";
+        }
+
+        const pGrams = weight * 2.2;
+        const pKcal = pGrams * 4;
+
+        const fKcal = targetCalories * 0.25;
+        const fGrams = fKcal / 9;
+
+        const cKcal = targetCalories - pKcal - fKcal;
+        const cGrams = cKcal / 4;
+
+        document.getElementById("totalCalories").textContent =
+          Math.round(targetCalories);
+        document.getElementById("protein").textContent = Math.round(pGrams);
+        document.getElementById("carbs").textContent = Math.round(cGrams);
+        document.getElementById("fats").textContent = Math.round(fGrams);
+        document.getElementById("strategyText").textContent = strategy;
+
+        document.getElementById("results").style.display = "block";
+      }
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.17.11/dist/js/uikit.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.17.11/dist/js/uikit-icons.min.js"></script>
+  </body>
+</html>
